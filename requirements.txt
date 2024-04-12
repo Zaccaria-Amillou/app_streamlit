@@ -1,0 +1,7 @@
+tensorflow==2.12.0
+streamlit==1.32.0
+numpy==1.23.5
+nltk==3.8.1
+pandas==2.0.1
+opencensus-ext-azure==1.0.8
+gunicorn
