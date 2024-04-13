@@ -45,6 +45,12 @@ st.title("Tweet Sentiment Prediction")
 # Input text box for user to enter a tweet
 tweet_input = st.text_input("Enter a tweet:")
 
+if 'feedback' not in st.session_state:
+    st.session_state.feedback = None
+
+if 'sentiment' not in st.session_state:
+    st.session_state.sentiment = None
+
 if st.button("Predict"):
     if tweet_input:
         # Preprocess the input
@@ -57,24 +63,25 @@ if st.button("Predict"):
         prediction = model.predict(data_tok)
         
         # Convert the prediction to 'POSITIVE' or 'NEGATIVE'
-        sentiment = 'POSITIVE' if prediction[0][0] > 0.7 else 'NEGATIVE'
+        st.session_state.sentiment = 'POSITIVE' if prediction[0][0] > 0.7 else 'NEGATIVE'
         
         # Display the prediction
-        st.write("Prediction:", sentiment)
+        st.write("Prediction:", st.session_state.sentiment)
 
-        # Ask for user feedback
-        feedback = None
-        st.write("Was the prediction correct?")
-        if st.button("Yes, it was correct"):
-            feedback = "Yes"
-        elif st.button("No, it wasn't correct"):
-            feedback = "No"
+# Ask for user feedback
+st.write("Can you give us your feedback?")
 
-        # Log the feedback to Application Insights
-        if feedback is not None:
-            logger.warning('User feedback', extra={'custom_dimensions': {'Tweet': tweet_input, 'Prediction': sentiment, 'Feedback': feedback}})
-
-            if feedback == "Yes":
-                st.write("Thank you for your feedback!")
-            else:
-                st.write("We're sorry to hear that. We'll use your feedback to improve our model.")
+if st.button("Yes, it was correct"):
+    st.session_state.feedback = "Yes"
+    # Log the feedback to Application Insights
+    logger.warning('User feedback', extra={'custom_dimensions': {'Tweet': tweet_input, 'Prediction': st.session_state.sentiment, 'Feedback': st.session_state.feedback}})
+    st.write("Thank you for your feedback!")
+    # Rerun the app
+    st.experimental_rerun()
+elif st.button("No, it wasn't correct"):
+    st.session_state.feedback = "No"
+    # Log the feedback to Application Insights
+    logger.warning('User feedback', extra={'custom_dimensions': {'Tweet': tweet_input, 'Prediction': st.session_state.sentiment, 'Feedback': st.session_state.feedback}})
+    st.write("We're sorry to hear that. We'll use your feedback to improve our model.")
+    # Rerun the app
+    st.experimental_rerun()

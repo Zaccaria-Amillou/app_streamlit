@@ -1,4 +1,4 @@
-# Use an official Python runtime as a parent image
+# Use an official Python:3.8 runtime 
 FROM python:3.8-slim-buster
 
 # Set the working directory in the container to /app
