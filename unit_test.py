@@ -10,10 +10,14 @@ class TestDocker(unittest.TestCase):
         self.client.images.build(path=".")
 
         # Run the Docker container
-        container = self.client.containers.run("your-image-name", detach=True)
+        container = self.client.containers.run("streamlit_app", detach=True)
 
         # Check that the container is running
-        self.assertTrue(container.status == "running")
+        try:
+            self.assertTrue(container.status == "running")
+        except AssertionError:
+            print(container.logs().decode('utf-8'))
+            raise
 
         # Stop and remove the container
         container.stop()
