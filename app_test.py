@@ -8,31 +8,60 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import re
+import string
 import csv
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 import logging
 
 
-
-nltk.download('stopwords')
 nltk.download('wordnet')
+nltk.download('stopwords')
 
+stop_words = set(stopwords.words("english"))
+lemmatizer = WordNetLemmatizer()
 
 logger = logging.getLogger(__name__)
 logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=cc8b2f05-ca7d-4f53-9ffe-8fbf51e3ff78'))
 
-# Preprocessing
 def preprocess(text):
-    stop_words = stopwords.words("english")
-    lemmatizer = WordNetLemmatizer()
-    text_cleaning_re = r"@\\S+|https?:\\S*|[^A-Za-z0-9]+|[-+]?\\d*\\.\\d+|\\d+"
-    # Remove link,user and special characters
-    text = re.sub(text_cleaning_re, ' ', str(text).lower()).strip()
-    tokens = []
-    for token in text.split():
-        if token not in stop_words:
-            tokens.append(lemmatizer.lemmatize(token))
-    return " ".join(tokens)
+    # Convert the tweet to lowercase
+    text = text.lower()
+    # Remove URLs
+    text = re.sub(r'http\S+|www.\S+', '', text)
+    # Remove non-alphanumeric characters
+    text = re.sub(r'[^a-zA-Z0-9]', ' ', text)
+    # Remove HTML tags
+    text = re.sub(r'<.*?>', ' ', text)
+    # Remove punctuation
+    text = "".join([x for x in text if x not in string.punctuation])
+    # Tokenization
+    tweet = text.split()
+    # Lemmatization
+    tweet = [lemmatizer.lemmatize(x) for x in tweet if x not in stop_words]
+    # Remove the word "lol"
+    tweet = [word for word in tweet if word != 'lol']
+    # Remove the word "amp"
+    tweet = [word for word in tweet if word != 'amp']
+    # Remove the word "quot"
+    tweet = [word for word in tweet if word != 'quot']
+    # Remove the word URL
+    tweet = [word for word in tweet if word != 'url']
+    # Reconstruct the tweet
+    tweet = " ".join(tweet)
+    return tweet
+
+# # Preprocessing
+# def preprocess(text):
+#     stop_words = stopwords.words("english")
+#     lemmatizer = WordNetLemmatizer()
+#     text_cleaning_re = r"@\\S+|.*https?:\\S*.*|.*www\\.\\S*.*|[^A-Za-z0-9]+|[-+]?\\d*\\.\\d+|\\d+"
+#     # Remove link,user and special characters
+#     text = re.sub(text_cleaning_re, ' ', str(text).lower()).strip()
+#     tokens = []
+#     for token in text.split():
+#         if token not in stop_words:
+#             tokens.append(lemmatizer.lemmatize(token))
+#     return " ".join(tokens)
 
 def predict_sentiment(tweet):
     # Preprocess the input
