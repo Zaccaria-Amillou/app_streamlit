@@ -25,7 +25,7 @@ logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=cc8b2f05
 def preprocess(text):
     stop_words = stopwords.words("english")
     lemmatizer = WordNetLemmatizer()
-    text_cleaning_re = "@\S+|https?:\S+|http?:\S|[^A-Za-z0-9]+|[-+]?\d*\.\d+|\d+"
+    text_cleaning_re = r"@\\S+|https?:\\S+|http?:\\S|[^A-Za-z0-9]+|[-+]?\\d*\\.\\d+|\\d+"
     # Remove link,user and special characters
     text = re.sub(text_cleaning_re, ' ', str(text).lower()).strip()
     tokens = []
