@@ -25,7 +25,7 @@ logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=cc8b2f05
 def preprocess(text):
     stop_words = stopwords.words("english")
     lemmatizer = WordNetLemmatizer()
-    text_cleaning_re = r"@\\S+|https?:\\S+|http?:\\S|[^A-Za-z0-9]+|[-+]?\\d*\\.\\d+|\\d+"
+    text_cleaning_re = r"@\\S+|https?:\\S*|[^A-Za-z0-9]+|[-+]?\\d*\\.\\d+|\\d+"
     # Remove link,user and special characters
     text = re.sub(text_cleaning_re, ' ', str(text).lower()).strip()
     tokens = []
@@ -33,6 +33,21 @@ def preprocess(text):
         if token not in stop_words:
             tokens.append(lemmatizer.lemmatize(token))
     return " ".join(tokens)
+
+def predict_sentiment(tweet):
+    # Preprocess the input
+    data_prepocess = [preprocess(tweet)]
+    
+    # Tokenize and pad the input
+    data_tok = pad_sequences(tokenizer.texts_to_sequences(data_prepocess), maxlen=100)
+    
+    # Make a prediction
+    prediction = model.predict(data_tok)
+    
+    # Convert the prediction to 'POSITIVE' or 'NEGATIVE'
+    sentiment = 'POSITIVE' if prediction[0][0] > 0.7 else 'NEGATIVE'
+    
+    return sentiment
 
 # Load the tokenizer
 with open('tokenizer/tokenizer_l_glo.pkl', 'rb') as handle:
@@ -54,17 +69,8 @@ if 'sentiment' not in st.session_state:
 
 if st.button("Predict"):
     if tweet_input:
-        # Preprocess the input
-        data_prepocess = [preprocess(tweet_input)]
-        
-        # Tokenize and pad the input
-        data_tok = pad_sequences(tokenizer.texts_to_sequences(data_prepocess), maxlen=100)
-        
-        # Make a prediction
-        prediction = model.predict(data_tok)
-        
-        # Convert the prediction to 'POSITIVE' or 'NEGATIVE'
-        st.session_state.sentiment = 'POSITIVE' if prediction[0][0] > 0.7 else 'NEGATIVE'
+        # Call the predict_sentiment function
+        st.session_state.sentiment = predict_sentiment(tweet_input)
         
         # Display the prediction
         st.write("Prediction:", st.session_state.sentiment)

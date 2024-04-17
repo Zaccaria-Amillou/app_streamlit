@@ -1,5 +1,6 @@
 # Import libraries
 import unittest
+from tensorflow.keras.preprocessing.text import Tokenizer
 from app_test import preprocess, predict_sentiment  # Import predict_sentiment
 
 # Define a test case class 
