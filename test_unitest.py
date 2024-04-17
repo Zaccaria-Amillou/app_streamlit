@@ -2,6 +2,7 @@
 import unittest
 import docker
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.preprocessing.text import Tokenizer
 from app_test import preprocess, tokenizer, model
 
 # Define a test case class 
