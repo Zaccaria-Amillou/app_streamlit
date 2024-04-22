@@ -23,11 +23,11 @@ logger = logging.getLogger(__name__)
 logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=cc8b2f05-ca7d-4f53-9ffe-8fbf51e3ff78'))
 
 abbreviations = {}
-with open('../input/abbreviations.txt', 'r') as file:
+with open('input/abbreviations.txt', 'r') as file:
     for line in file:
         key, value = line.strip().split(':')
         abbreviations[key.strip()] = value.strip()
-        
+
 def preprocess(text):
     # Convert the tweet to lowercase
     text = text.lower()
