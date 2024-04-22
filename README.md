@@ -2,6 +2,18 @@
 
 This repository contains a Streamlit application for sentiment analysis. The application uses a pre-trained TensorFlow model to predict the sentiment of a given text.
 
+## Notebook
+The notebook folder contains the EDA, the first modelisation and a test with a BERT model.
+
+If you want to test the modelisation part you'll have to download the glove.6b.300d.txt
+```bash
+wget http://nlp.stanford.edu/data/glove.6B.zip
+```
+Then you can unzip the file into the input folder
+```bash
+unzip glove.6B.zip glove.6B.300d.txt -d input
+```
+
 ## Application Structure
 
 - `app_test.py`: This is the main application file. It contains the Streamlit application and the code for preprocessing the input and making predictions with the model.
