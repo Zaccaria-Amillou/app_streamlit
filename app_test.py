@@ -22,6 +22,12 @@ lemmatizer = WordNetLemmatizer()
 logger = logging.getLogger(__name__)
 logger.addHandler(AzureLogHandler(connection_string='InstrumentationKey=cc8b2f05-ca7d-4f53-9ffe-8fbf51e3ff78'))
 
+abbreviations = {}
+with open('../input/abbreviations.txt', 'r') as file:
+    for line in file:
+        key, value = line.strip().split(':')
+        abbreviations[key.strip()] = value.strip()
+        
 def preprocess(text):
     # Convert the tweet to lowercase
     text = text.lower()
@@ -45,22 +51,11 @@ def preprocess(text):
     tweet = [word for word in tweet if word != 'quot']
     # Remove the word URL
     tweet = [word for word in tweet if word != 'url']
+    # Convertit les abréviations en anglais standard
+    tweet = [abbreviations[word] if word in abbreviations else word for word in tweet]
     # Reconstruct the tweet
     tweet = " ".join(tweet)
     return tweet
-
-# # Preprocessing
-# def preprocess(text):
-#     stop_words = stopwords.words("english")
-#     lemmatizer = WordNetLemmatizer()
-#     text_cleaning_re = r"@\\S+|.*https?:\\S*.*|.*www\\.\\S*.*|[^A-Za-z0-9]+|[-+]?\\d*\\.\\d+|\\d+"
-#     # Remove link,user and special characters
-#     text = re.sub(text_cleaning_re, ' ', str(text).lower()).strip()
-#     tokens = []
-#     for token in text.split():
-#         if token not in stop_words:
-#             tokens.append(lemmatizer.lemmatize(token))
-#     return " ".join(tokens)
 
 def predict_sentiment(tweet):
     # Preprocess the input
