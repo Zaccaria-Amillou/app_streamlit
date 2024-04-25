@@ -16,7 +16,11 @@ unzip glove.6B.zip glove.6B.300d.txt -d input
 
 ## Application Structure
 
-- `app_test.py`: This is the main application file. It contains the Streamlit application and the code for preprocessing the input and making predictions with the model.
+- `flask_app.py`: This is the main application file. It contains the flask application and the code for preprocessing the input and making predictions with the model.
+
+- `viz_app.py`: This is the visualization file. It contains the Streamlit application that create a visualisation for the application inside the container.
+
+- `viz_app_local .py`: This is the visualization file. It contains the Streamlit application that create a visualisation for the application locally with a connection to the flask api on azure.
 
 - `tokenizer/tokenizer_l_glo.pkl`: This file contains the pre-trained tokenizer used to tokenize the input text.
 
@@ -35,11 +39,15 @@ The application uses a pre-trained TensorFlow model to make predictions. The mod
 To run the application, you need to have Streamlit and TensorFlow installed. You can install them with pip:
 
 ```bash
-pip install streamlit tensorflow
+pip install -r requirements.txt
 ```
-Then, you can run the application with the following command:
+Then, you can run the flask application with the following command:
 ```bash
-streamlit run app_test.py
+flask run --port=5000
+```
+And then the streamlit application with the following command:
+```bash
+streamlit run viz_app.py
 ```
 
 The application will be accessible in your web browser at localhost:8501.
@@ -53,7 +61,7 @@ docker build -t streamlit_app .
 
 And run a container from the image with this command:
 ```bash
-docker run -p 8501:8501 streamlit_app
+docker run -p 5000:5000 -p8501:8501 streamlit_app
 ```
 
 The application will be accessible in your web browser at localhost:8501.
