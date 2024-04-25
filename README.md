@@ -32,7 +32,7 @@ The application preprocesses the input text by removing links, usernames, specia
 
 ## Model
 
-The application uses a pre-trained TensorFlow model to make predictions. The model is loaded from `model/model.h5` in `app_test.py`.
+The application uses a pre-trained TensorFlow model to make predictions. The model is loaded from `model/model.h5` in `flask.py`.
 
 ## Running the Application
 
