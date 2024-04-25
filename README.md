@@ -28,11 +28,11 @@ unzip glove.6B.zip glove.6B.300d.txt -d input
 
 ## Preprocessing
 
-The application preprocesses the input text by removing links, usernames, special characters, and stop words, and by lemmatizing the words. The preprocessing function is defined in `app_test.py`.
+The application preprocesses the input text by removing links, usernames, special characters, and stop words, and by lemmatizing the words. The preprocessing function is defined in `flask_app.py`.
 
 ## Model
 
-The application uses a pre-trained TensorFlow model to make predictions. The model is loaded from `model/model.h5` in `flask.py`.
+The application uses a pre-trained TensorFlow model to make predictions. The model is loaded from `model/model.h5` in `flask_app.py`.
 
 ## Running the Application
 
