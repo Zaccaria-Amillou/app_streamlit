@@ -1,13 +1,13 @@
 # Import libraries
 import unittest
 import subprocess
-import tensorflow as tf
-from tensorflow.keras.preprocessing.text import Tokenizer
-from app_test import preprocess, predict_sentiment  # Import predict_sentiment
+from flask_app import app, preprocess  # Import Flask app and preprocess function
 
 # Defining a test case class 
 class TestApp(unittest.TestCase):
 
+    def setUp(self):
+        self.app = app.test_client()
 
     def test_docker_build(self):
         # Running the Docker build command
@@ -32,10 +32,17 @@ class TestApp(unittest.TestCase):
         # Defining a test input
         test_input = "This is a test tweet"
 
-        # Calling the predict_sentiment function
-        sentiment = predict_sentiment(test_input)
+        # Sending a POST request to the Flask app
+        response = self.app.post('/', data={'tweet': test_input})
+
+        # Checking that the response is a 200 OK
+        self.assertEqual(response.status_code, 200)
+
+        # Checking that the response is JSON
+        self.assertEqual(response.content_type, 'application/json')
 
         # Checking that the sentiment is either 'POSITIVE' or 'NEGATIVE'
+        sentiment = response.get_json()['sentiment']
         self.assertIn(sentiment, ['POSITIVE', 'NEGATIVE'])
 
 # Running the tests

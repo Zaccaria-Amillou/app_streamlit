@@ -4,6 +4,10 @@ streamlit
 numpy
 nltk
 pandas
+requests
+matplotlib
+opencensus
 opencensus-ext-azure
-gunicorn
 docker
+flask
+gunicorn
